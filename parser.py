@@ -71,10 +71,12 @@ volume = int(input("Enter volume:"))
 journal = str(input("Enter journal:"))
 author = str(input("Enter author(s):"))
 step1 = author.split("and")
+#düzenlenicek
 res = []
 for s in step1:
     sub = s.split(' ')
     res.append(sub)
+#
 title = str(input("Enter title:"))
 year = int(input("Enter year:"))
 page1 = int(input("Enter initial page:"))
@@ -83,7 +85,3 @@ key = str(input("Enter a key value:"))
 c = Create(type, typeTitle, res, title, year, volume, journal, page1, page2, key)
 c.create()
 c.read()
-
-"""parameter = str(input("Enter the thing that you want to search:"))
-s = Search(parameter)
-s.search()"""
