@@ -54,17 +54,6 @@ class Create:
         entries = new.split('@')[1:]
         print(entries)
 
-class Search:
-    def __init__(self, parameter):
-        self.parameter = parameter
-    def search(self):
-        parameter = "%s" %str(self.parameter)
-        f = open("bibtex.bib", "r")
-        data = list(f.read())
-        for row in data:
-            if data == parameter:
-                print("Found it", data)
-
 type = str(input("Enter bib's type:"))
 typeTitle = str(input("Enter bib's type's title:"))
 volume = int(input("Enter volume:"))
