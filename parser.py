@@ -1,7 +1,3 @@
-import re
-from typing import List
-
-
 class Item:
     def __init__(self, type, typeTitle, author, title, year, volume, journal, page1, page2, key):
         self.type = type
@@ -14,7 +10,6 @@ class Item:
         self.page1 = page1
         self.page2 = page2
         self.key = key
-
 
 class Create:
     def __init__(self, type, typeTitle, author, title, year, volume, journal, page1, page2, key):
@@ -55,22 +50,57 @@ class Create:
         print(entries)
 
 type = str(input("Enter bib's type:"))
+type = type.replace('ö', 'o')
+type = type.replace('ğ', 'g')
+type = type.replace('ü', 'u')
+type = type.replace('ç', 'c')
+type = type.replace('ş', 's')
+type = type.title()
 typeTitle = str(input("Enter bib's type's title:"))
+typeTitle = typeTitle.replace('ö', 'o')
+typeTitle = typeTitle.replace('ğ', 'g')
+typeTitle = typeTitle.replace('ü', 'u')
+typeTitle = typeTitle.replace('ç', 'c')
+typeTitle = typeTitle.replace('ş', 's')
+typeTitle = typeTitle.title()
 volume = int(input("Enter volume:"))
 journal = str(input("Enter journal:"))
+journal = journal.replace('ö', 'o')
+journal = journal.replace('ğ', 'g')
+journal = journal.replace('ü', 'u')
+journal = journal.replace('ç', 'c')
+journal = journal.replace('ş', 's')
+journal = journal.title()
 author = str(input("Enter author(s):"))
-step1 = author.split("and")
-#düzenlenicek
+author = author.replace('ö', 'o')
+author = author.replace('ç', 'c')
+author = author.replace('ğ', 'g')
+author = author.replace('ü', 'u')
+author = author.replace('ş', 's')
+author = author.title()
+"""step1 = author.split("and")
 res = []
 for s in step1:
-    sub = s.split(' ')
+    sub = s.split(',')
     res.append(sub)
-#
+print(res)"""
 title = str(input("Enter title:"))
+title = title.replace('ö', 'o')
+title = title.replace('ç', 'c')
+title = title.replace('ğ', 'g')
+title = title.replace('ü', 'u')
+title = title.replace('ş', 's')
+title = title.title()
 year = int(input("Enter year:"))
 page1 = int(input("Enter initial page:"))
 page2 = int(input("Enter final page:"))
 key = str(input("Enter a key value:"))
-c = Create(type, typeTitle, res, title, year, volume, journal, page1, page2, key)
+key = key.replace('ö', 'o')
+key = key.replace('ç', 'c')
+key = key.replace('ğ', 'g')
+key = key.replace('ü', 'u')
+key = key.replace('ş', 's')
+key = key.title()
+c = Create(type, typeTitle, author, title, year, volume, journal, page1, page2, key)
 c.create()
 c.read()
