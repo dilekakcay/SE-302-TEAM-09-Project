@@ -1,0 +1,11 @@
+import re
+from typing import List
+
+class Create:
+    def __init__(self, id):
+        self.id = id
+
+        class Delete:
+            def id(self):
+                self.id = None
+                print('Id is deleted')
