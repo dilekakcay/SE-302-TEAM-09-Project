@@ -55,15 +55,15 @@ class Create:
                 bibtex_database = bibtexparser.load(bibtex)
                 keyys = bibtex_database.entries
                 print(keyys[0].keys())
-                author = bibtex_database.entries[0]["author"]  # x yerine istenileni yaz ("title") mesela
+                author = bibtex_database.entries[0]["author"]  
                 year = bibtex_database.entries[0]["year"]
                 title = bibtex_database.entries[0]["title"]
-                type1 = bibtex_database.entries[0]["ENTRYTYPE"]
+                type1 = bibtex_database.entries[0]["entry"]
                 print(author)
                 print(year)
                 print(title)
-                print(type1)
-                self.loaddata(author, year, type1, title)
+                print(type)
+                self.loaddata(author, year, type, title)
 
 type = str(input("Enter bib's type:"))
 type = type.replace('ö', 'o')
