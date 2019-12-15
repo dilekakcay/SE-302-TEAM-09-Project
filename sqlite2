@@ -1,0 +1,131 @@
+
+from kütüphane import *
+
+print("""***********************************
+
+Bibtex Programına Hoşgeldiniz.
+
+İşlemler;
+
+1. Kitapları Göster
+
+2. Kitap Sorgulama
+
+3. Kitap Ekle
+
+4. Kitap Sil 
+
+5. Baskı Yükselt
+
+Çıkmak için 'q' ya basın.
+***********************************""")
+
+kütüphane = Kütüphane()
+
+while True:
+    işlem = input("Yapacağınız İşlem:")
+
+    if (işlem == "q"):
+        print("Program Sonlandırılıyor.....")
+        print("Yine bekleriz....")
+        break
+    elif (işlem == "1"):
+        kütüphane.kitapları_goster()
+
+    elif (işlem == "2"):
+        name = input("Hangi kitabı istiyorsunuz ? ")
+        print("Kitap Sorgulanıyor...")
+        time.sleep(2)
+
+        kütüphane.kitap_sorgula(name)
+
+    elif (işlem == "3"):
+        name = input("İsim:")
+        author = input("Yazar:")
+        publisher = input("Yayınevi:")
+        type = input("Tür:")
+        year = int(input("Baskı"))
+
+        yeni_kitap = Kitap(name,author,publisher,type,year)
+
+        print("Kitap ekleniyor....")
+        time.sleep(2)
+
+        kütüphane.kitap_ekle(yeni_kitap)
+        print("Kitap Eklendi....")
+
+
+    elif (işlem == "4"):
+        name = input("Hangi kitabı silmek istiyorsunuz ?")
+
+        cevap = input("Emin misiniz ? (E/H)")
+        if (cevap == "E"):
+            print("Kitap Siliniyor...")
+            time.sleep(2)
+            kütüphane.kitap_sil(name)
+            print("Kitap silindi....")
+
+
+    elif (işlem == "5"):
+        name = input("Hangi kitabın baskısını yükseltmek istiyorsunuz ?")
+        print("Baskı yükseltiliyor....")
+        time.sleep(2)
+        kütüphane.baskı_yükselt(name)
+        print("Baskı yükseltildi....")
+
+    else:
+        print("Geçersiz İşlem...")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
