@@ -1,0 +1,147 @@
+import sqlite3
+
+import time
+
+class Kitap():
+
+    def __init__(self,type,typeTitle,author,title,year,volume,journal,page1,page2,key,publisher):
+
+        self.type = type
+        self.typeTitle = typeTitle
+        self.author = author
+        self.title = title
+        self.year = year
+        self.volume = volume
+        self.journal = journal
+        self.page1 = page1
+        self.page2 = page2
+        self.key = key
+        self.publisher = publisher
+
+
+
+    def __str__(self):
+
+        return "Kitap İsmi: {}\nYazar: {}\nYayınevi: {}\nTür: {}\nBaskı: {}\n".format(self.type,self.typeTitle,self.author,self.title,self.year,self.volume,self.journal,self.page1,self.page2,self.key,self.publisher)
+
+
+class Kütüphane():
+
+    def __init__(self):
+
+        self.baglanti_olustur()
+
+    def baglanti_olustur(self):
+
+        self.baglanti = sqlite3.connect("kütüphane.db")
+
+        self.cursor = self.baglanti.cursor()
+
+        sorgu = "Create Table If not exists kitaplar (name TEXT,author TEXT,typeTitle TEXT,title TEXT,year INT,publisher Text)"
+
+        self.cursor.execute(sorgu)
+
+        self.baglanti.commit()
+    def baglantiyi_kes(self):
+        self.baglanti.close()
+
+    def kitapları_goster(self):
+
+        sorgu =  "Select * From kitaplar"
+
+        self.cursor.execute(sorgu)
+
+        kitaplar = self.cursor.fetchall()
+
+        if (len(kitaplar) == 0):
+            print("Kütüphanede kitap bulunmuyor...")
+        else:
+            for i in kitaplar:
+
+                kitap = Kitap(i[0],i[1],i[2],i[3],i[4])
+                print(kitap)
+
+    def kitap_sorgula(self,name):
+
+        sorgu = "Select * From kitaplar where isim = ?"
+
+        self.cursor.execute(sorgu,(name,))
+
+        kitaplar = self.cursor.fetchall()
+
+        if (len(kitaplar) == 0):
+            print("Böyle bir kitap bulunmuyor.....")
+        else:
+            kitap = Kitap(kitaplar[0][0],kitaplar[0][1],kitaplar[0][2],kitaplar[0][3],kitaplar[0][4])
+
+            print(kitap)
+    def kitap_ekle(self,kitap):
+
+        sorgu = "Insert into kitaplar Values(?,?,?,?,?)"
+
+        self.cursor.execute(sorgu,(kitap.name,kitap.author,kitap.publisher,kitap.type,kitap.year))
+
+        self.baglanti.commit()
+
+    def kitap_sil(self,name):
+
+        sorgu = "Delete From kitaplar where isim = ?"
+
+        self.cursor.execute(sorgu,(name,))
+
+        self.baglanti.commit()
+
+    def baskı_yükselt(self,name):
+
+        sorgu = "Select * From kitaplar where isim = ?"
+
+        self.cursor.execute(sorgu,(name,))
+
+
+        kitaplar = self.cursor.fetchall()
+
+        if (len(kitaplar) == 0):
+            print("Böyle bir kitap bulunmuyor...")
+        else:
+            baskı = kitaplar[0][4]
+
+            baskı += 1
+
+            sorgu2 = "Update kitaplar set baskı = ? where isim = ?"
+
+            self.cursor.execute(sorgu2,(baskı,name))
+
+            self.baglanti.commit()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
