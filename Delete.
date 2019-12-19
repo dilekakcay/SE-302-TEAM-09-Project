@@ -19,3 +19,7 @@ class Delete(QDialog):
         layout.addWidget(self.QBtn)
         layout.addWidget(self.deleteid)
         self.setLayout(layout)
+        
+        def deleteId(self)
+        searchrol = ""
+        searchrol = self.searchinput.text()
