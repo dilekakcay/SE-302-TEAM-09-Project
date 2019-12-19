@@ -1,0 +1,21 @@
+class Delete(QDialog):
+    def __init__(self, *args, **kwargs):
+        super(Delete, self).__init__(*args, **kwargs)
+
+        self.QBtn = QPushButton()
+        self.QBtn.setText("Delete")
+
+        self.setWindowTitle("Delete Id.")
+        self.setFixedWidth(200)
+        self.setFixedHeight(200)
+        self.QBtn.clicked.connect(self.deleteId)
+
+        layout = QVBoxLayout()
+
+        self.deleteid = QLineEdit()
+        self.onlyInt = QIntValidator()
+        self.deleteid.setValidator(self.onlyInt)
+        self.deleteid.setPlaceholderText("Id Number:")
+        layout.addWidget(self.QBtn)
+        layout.addWidget(self.deleteid)
+        self.setLayout(layout)
