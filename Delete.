@@ -1,3 +1,14 @@
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtWebEngineWidgets import QWebEngineView
+from PyQt5.QtPrintSupport import *
+import sys
+import sqlite3
+import time
+import os
+
+
 class Delete(QDialog):
     def __init__(self, *args, **kwargs):
         super(Delete, self).__init__(*args, **kwargs)
@@ -5,7 +16,7 @@ class Delete(QDialog):
         self.QBtn = QPushButton()
         self.QBtn.setText("Delete")
 
-        self.setWindowTitle("Delete Id.")
+        self.setWindowTitle("Delete Id")
         self.setFixedWidth(200)
         self.setFixedHeight(200)
         self.QBtn.clicked.connect(self.deleteId)
@@ -19,7 +30,11 @@ class Delete(QDialog):
         layout.addWidget(self.QBtn)
         layout.addWidget(self.deleteid)
         self.setLayout(layout)
-        
+
         def deleteId(self)
         searchrol = ""
         searchrol = self.searchinput.text()
+
+        self.baglanti = sqlite3.connect("kütüphane.db")
+        self.cursor = self.baglanti.cursor()
+        self.cursor.execute(sorgu)
