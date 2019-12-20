@@ -1,0 +1,94 @@
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+import sys
+import sqlite3
+
+class Create(QDialog):
+    def __init__(self, *args, **kwargs):
+        super(Create, self).__init__(*args, **kwargs)
+
+        self.QBtn = QPushButton()
+        self.QBtn.setText("Add")
+
+        self.setWindowTitle("Create Bibtex")
+        self.setFixedWidth(500)
+        self.setFixedHeight(500)
+
+        self.setWindowTitle("Import Bibtex")
+        self.setFixedWidth(500)
+        self.setFixedHeight(500)
+
+        self.QBtn.clicked.connect(self.create)
+
+        layout = QVBoxLayout()
+        self.entryTypeinput = QComboBox()
+        self.entryTypeinput.addItem("Book")
+        self.entryTypeinput.addItem("Booklet")
+        self.entryTypeinput.addItem("Misc")
+        self.entryTypeinput.addItem("Article")
+        self.entryTypeinput.addItem("Proceedings")
+        layout.addWidget(self.entryTypeinput)
+
+        self.authorinput = QLineEdit()
+        self.authorinput.setPlaceholderText("Author:")
+        layout.addWidget(self.authorinput)
+
+        self.titinput = QLineEdit()
+        self.titinput.setPlaceholderText("Title:")
+        layout.addWidget(self.titinput)
+
+        self.yearinput = QLineEdit()
+        self.yearinput.setPlaceholderText("Year:")
+        layout.addWidget(self.yearinput)
+
+        self.journalinput = QLineEdit()
+        self.journalinput.setPlaceholderText("Journal:")
+        layout.addWidget(self.journalinput)
+
+        self.bibtexkeyinput = QLineEdit()
+        self.bibtexkeyinput.setPlaceholderText("Bibtex Key:")
+        layout.addWidget(self.bibtexkeyinput)
+
+        self.volumeinput = QLineEdit()
+        self.volumeinput.setPlaceholderText("Volume:")
+        layout.addWidget(self.volumeinput)
+
+        self.pageinput = QLineEdit()
+        self.pageinput.setPlaceholderText("Page:")
+        layout.addWidget(self.pageinput)
+
+        layout.addWidget(self.QBtn)
+        self.setLayout(layout)
+
+    def create(self):
+        entryType = ""
+        author = ""
+        tit = ""
+        year = ""
+        journal = ""
+        bibtexkey = ""
+        volume = ""
+        page = ""
+
+        entryType = self.entryTypeinput.itemText(self.entryTypeinput.currentIndex())
+        author = self.authorinput.text()
+        tit = self.titinput.text()
+        year = self.yearinput.text()
+        journal = self.journalinput.text()
+        bibtexkey = self.bibtexkeyinput.text()
+        volume = self.volumeinput.text()
+        page = self.pageinput.text()
+
+        try:
+            self.conn = sqlite3.connect("database.db")
+            self.c = self.conn.cursor()
+            self.c.execute(
+                "INSERT INFO bibtex (entryType, author, tit, year, journal, bibtexkey) VALUES (?,?,?,?,?,?,?,?)",
+                (entryType, author, tit, year, journal, bibtexkey, volume, page))
+            self.conn.commit()
+            self.c.close()
+            self.conn.close()
+            QMessageBox.information(QMessageBox(), 'Successful', 'Bibtex is added successfully to the database.')
+            self.close()
+        except Exception:
+            QMessageBox.warning(QMessageBox(), 'Error', 'Could not add bibtex to the database.')
