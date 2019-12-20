@@ -35,6 +35,13 @@ class Delete(QDialog):
         searchrol = ""
         searchrol = self.searchinput.text()
 
-        self.baglanti = sqlite3.connect("kütüphane.db")
-        self.cursor = self.baglanti.cursor()
-        self.cursor.execute(sorgu)
+        self.conn = sqlite3.connect("database.db")
+        self.c = self.conn.cursor()
+        self.c.execute("DELETE from Id WHERE roll=" + str(delrol))
+        self.conn.commit()
+        self.c.close()
+        self.conn.close()
+        QMessageBox.information(QMessageBox(), 'Deleted')
+        self.close()
+        except Exception:
+        QMessageBox.warning(QMessageBox(), 'Error')
