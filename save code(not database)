@@ -1,0 +1,15 @@
+def saveBibtex(self):
+
+        global data
+        print(data)
+        db = BibDatabase()
+        db.entries = []
+        db.entries = data
+
+        writer = BibTexWriter()
+
+        options = QFileDialog.Options()
+        bibtexFile, _ = QFileDialog.getSaveFileName(self, "Save Bibtex File", "",
+                                                    "BibTeX Files (*.bib)", options=options)
+        with open(bibtexFile, 'w') as bibfile:
+            bibfile.write(writer.write(db))
