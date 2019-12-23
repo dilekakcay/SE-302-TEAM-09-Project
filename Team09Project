@@ -1,0 +1,449 @@
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtWebEngineWidgets import QWebEngineView
+from PyQt5.QtPrintSupport import *
+import sys
+import sqlite3
+import time
+import os
+from PyQt5 import QtGui
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
+from PyQt5.QtGui import QPixmap
+
+
+class InsertDialog(QDialog):
+    def __init__(self, *args, **kwargs):
+        super(InsertDialog, self).__init__(*args, **kwargs)
+
+        self.QBtn = QPushButton()
+        self.QBtn.setText("Register")
+
+        self.setWindowTitle("Add Bibtex")
+        self.setFixedWidth(500)
+        self.setFixedHeight(500)
+
+        self.setWindowTitle("Insert Bibtex Data")
+        self.setFixedWidth(500)
+        self.setFixedHeight(500)
+
+        self.QBtn.clicked.connect(self.addbibtex)
+
+        layout = QVBoxLayout()
+
+        self.authorinput = QLineEdit()
+        self.authorinput.setPlaceholderText("Author")
+        layout.addWidget(self.authorinput)
+
+        self.typeinput = QComboBox()
+        self.typeinput.addItem("Book")
+        self.typeinput.addItem("Booklet")
+        self.typeinput.addItem("Misc")
+        self.typeinput.addItem("Article")
+        self.typeinput.addItem("Proceedings")
+        self.typeinput.addItem("Information Technology")
+        self.typeinput.addItem("Journal")
+        layout.addWidget(self.typeinput)
+
+        self.yearinput = QComboBox()
+        self.yearinput.addItem("1990")
+        self.yearinput.addItem("1991")
+        self.yearinput.addItem("1992")
+        self.yearinput.addItem("1993")
+        self.yearinput.addItem("1994")
+        self.yearinput.addItem("1995")
+        self.yearinput.addItem("1996")
+        self.yearinput.addItem("1997")
+        self.yearinput.addItem("1998")
+        self.yearinput.addItem("1999")
+        self.yearinput.addItem("2000")
+        self.yearinput.addItem("2001")
+        self.yearinput.addItem("2002")
+        self.yearinput.addItem("2003")
+        self.yearinput.addItem("2004")
+        self.yearinput.addItem("2005")
+        self.yearinput.addItem("2006")
+        self.yearinput.addItem("2007")
+        self.yearinput.addItem("2008")
+        self.yearinput.addItem("2009")
+        self.yearinput.addItem("2010")
+        self.yearinput.addItem("2011")
+        self.yearinput.addItem("2012")
+        self.yearinput.addItem("2013")
+        self.yearinput.addItem("2014")
+        self.yearinput.addItem("2015")
+        self.yearinput.addItem("2016")
+        self.yearinput.addItem("2017")
+        self.yearinput.addItem("2018")
+        self.yearinput.addItem("2019")
+        layout.addWidget(self.yearinput)
+
+        self.titleinput = QLineEdit()
+        self.titleinput.setPlaceholderText("Title")
+        layout.addWidget(self.titleinput)
+
+        self.pageinput = QLineEdit()
+        self.pageinput.setPlaceholderText("Page")
+        layout.addWidget(self.pageinput)
+
+        layout.addWidget(self.QBtn)
+        self.setLayout(layout)
+
+    def addbibtex(self):
+
+        author = ""
+        type = ""
+        year = -1
+        title = ""
+        page = ""
+
+        author = self.authorinput.text()
+        type = self.typeinput.itemText(self.typeinput.currentIndex())
+        year = self.yearinput.itemText(self.yearinput.currentIndex())
+        title = self.titleinput.text()
+        page = self.pageinput.text()
+        try:
+            self.conn = sqlite3.connect("database.db")
+            self.c = self.conn.cursor()
+            self.c.execute("INSERT INTO bibtexs (author, type, year, title, page) VALUES (?,?,?,?,?)",
+                           (author, type, year, title, page))
+            self.conn.commit()
+            self.c.close()
+            self.conn.close()
+            QMessageBox.information(QMessageBox(), 'Successful', 'Bibtex is added successfully to the database.')
+            self.close()
+        except Exception:
+            QMessageBox.warning(QMessageBox(), 'Error', 'Could not add bibtex to the database.')
+
+
+class SearchDialog(QDialog):
+    def __init__(self, *args, **kwargs):
+        super(SearchDialog, self).__init__(*args, **kwargs)
+
+        self.QBtn = QPushButton()
+        self.QBtn.setText("Search")
+
+        self.setWindowTitle("Search BibTeX")
+        self.setFixedWidth(500)
+        self.setFixedHeight(300)
+        self.QBtn.clicked.connect(self.searchbib)
+        layout = QVBoxLayout()
+
+        self.searchinput = QLineEdit()
+        self.onlyInt = QIntValidator()
+        self.searchinput.setValidator(self.onlyInt)
+        self.searchinput.setPlaceholderText("ID No.")
+        layout.addWidget(self.searchinput)
+        layout.addWidget(self.QBtn)
+        self.setLayout(layout)
+
+    def searchbib(self):
+
+        searchrol = ""
+        searchrol = self.searchinput.text()
+        try:
+            self.conn = sqlite3.connect("database.db")
+            self.c = self.conn.cursor()
+            result = self.c.execute("SELECT * from bibtexs WHERE id=" + str(searchrol))
+            row = result.fetchone()
+            serachresult = "ID No : " + str(row[0]) + '\n' + "Author : " + str(row[1]) + '\n' + "Type : " + str(
+                row[2]) + '\n' + "Year : " + str(row[3]) + '\n' + "Title : " + str(row[4])
+            QMessageBox.information(QMessageBox(), 'Successful', serachresult)
+            self.conn.commit()
+            self.c.close()
+            self.conn.close()
+        except Exception:
+            QMessageBox.warning(QMessageBox(), 'Error', 'Could not Find bibtex from the database.')
+
+
+class DeleteDialog(QDialog):
+    def __init__(self, *args, **kwargs):
+        super(DeleteDialog, self).__init__(*args, **kwargs)
+
+        self.QBtn = QPushButton()
+        self.QBtn.setText("Delete")
+
+        self.setWindowTitle("Delete Bibtex")
+        self.setFixedWidth(500)
+        self.setFixedHeight(300)
+        self.QBtn.clicked.connect(self.deletebibtex)
+        layout = QVBoxLayout()
+
+        self.deleteinput = QLineEdit()
+        self.onlyInt = QIntValidator()
+        self.deleteinput.setValidator(self.onlyInt)
+        self.deleteinput.setPlaceholderText("ID No.")
+        layout.addWidget(self.deleteinput)
+        layout.addWidget(self.QBtn)
+        self.setLayout(layout)
+
+    def deletebibtex(self):
+
+        delrol = ""
+        delrol = self.deleteinput.text()
+        try:
+            self.conn = sqlite3.connect("database.db")
+            self.c = self.conn.cursor()
+            self.c.execute("DELETE from bibtexs WHERE id=" + str(delrol))
+            self.conn.commit()
+            self.c.close()
+            self.conn.close()
+            QMessageBox.information(QMessageBox(), 'Successful', 'Deleted From Table Successful')
+            self.close()
+        except Exception:
+            QMessageBox.warning(QMessageBox(), 'Error', 'Could not Delete bibtex from the database.')
+
+
+class AboutDialog(QDialog):
+    def __init__(self, *args, **kwargs):
+        super(AboutDialog, self).__init__(*args, **kwargs)
+
+        self.setFixedWidth(500)
+        self.setFixedHeight(250)
+
+        QBtn = QDialogButtonBox.Ok
+        self.buttonBox = QDialogButtonBox(QBtn)
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+
+        layout = QVBoxLayout()
+
+        self.setWindowTitle("About")
+        title = QLabel("Bibtex Library")
+        font = title.font()
+        font.setPointSize(20)
+        title.setFont(font)
+
+        labelpic = QLabel()
+        pixmap = QPixmap('development.png')
+        pixmap = pixmap.scaledToWidth(50)
+        labelpic.setPixmap(pixmap)
+        labelpic.setFixedHeight(20)
+
+        layout.addWidget(title)
+
+        layout.addWidget(QLabel("Copyright Team 09"))
+        layout.addWidget(labelpic)
+
+        layout.addWidget(self.buttonBox)
+
+        self.setLayout(layout)
+
+
+class HelpDialog(QDialog):
+    def __init__(self):
+        super().__init__()
+        self.title = "Help"
+        self.top = 500
+        self.left = 500
+        self.width = 500
+        self.height = 500
+        self.InitWindow()
+
+    def InitWindow(self):
+        self.setWindowIcon(QtGui.QIcon("development.png"))
+        self.setWindowTitle(self.title)
+        self.setGeometry(self.left, self.top, self.width, self.height)
+        vbox = QVBoxLayout()
+        labelImage = QLabel(self)
+        pixmap = QPixmap("help.png")
+        labelImage.setPixmap(pixmap)
+        vbox.addWidget(labelImage)
+        self.setLayout(vbox)
+        self.show()
+
+
+class FilterDialog(QDialog):
+    def filtering(self):
+
+        item = self.filteredlist
+        # searching author
+        while bool(self.rowdataauthor):
+            for a in self.rowdataauthor:
+                input = a
+                for item in MainWindow.data:
+                    for b in item.items():
+                        if input in b:
+                            self.filteredlist.append(item)
+                            # print(self.filteredlist)
+            break
+        # searching title
+
+        while bool(self.rowdatatitle):
+            for c in self.rowdatatitle:
+                input = c
+                for item in MainWindow.data:
+                    for d in item.items():
+                        if input in d:
+                            self.filteredlist.append(item)
+                            # print(self.filteredlist)
+            break
+        # searching type
+        while bool(self.rowdatatype):
+            for e in self.rowdatatype:
+                input = e
+                for item in MainWindow.data:
+                    for f in item.items():
+                        if input in f:
+                            self.filteredlist.append(item)
+                            # print(self.filteredlist)
+            break
+        # searching year
+        while bool(self.yeardata):
+            for g in self.yeardata:
+                input = g
+                for item in MainWindow.data:
+                    for h in item.items():
+                        if input in h:
+                            self.filteredlist.append(item)
+                            # print(self.filteredlist)
+            break
+
+        print(self.filteredlist)
+
+
+class MainWindow(QMainWindow):
+    def __init__(self, *args, **kwargs):
+        super(MainWindow, self).__init__(*args, **kwargs)
+        self.setWindowIcon(QIcon('icon/g2.png'))  # window icon
+
+        self.conn = sqlite3.connect("database.db")
+        self.c = self.conn.cursor()
+        self.c.execute(
+            "CREATE TABLE IF NOT EXISTS bibtexs(id INTEGER PRIMARY KEY AUTOINCREMENT ,author TEXT, type TEXT,year INTEGER,page INTEGER,title TEXT)")
+        self.c.close()
+
+        file_menu = self.menuBar().addMenu("&File")
+
+        help_menu = self.menuBar().addMenu("&Help")
+
+        search_menu = self.menuBar().addMenu("&Search")
+
+        about_menu = self.menuBar().addMenu("&About")
+
+        self.setWindowTitle("Bibtex Library")
+        self.setMinimumSize(1200, 1000)
+
+        self.tableWidget = QTableWidget()
+        self.setCentralWidget(self.tableWidget)
+        self.tableWidget.setAlternatingRowColors(True)
+        self.tableWidget.setColumnCount(6)
+        self.tableWidget.horizontalHeader().setCascadingSectionResizes(False)
+        self.tableWidget.horizontalHeader().setSortIndicatorShown(False)
+        self.tableWidget.horizontalHeader().setStretchLastSection(True)
+        self.tableWidget.verticalHeader().setVisible(False)
+        self.tableWidget.verticalHeader().setCascadingSectionResizes(False)
+        self.tableWidget.verticalHeader().setStretchLastSection(False)
+        self.tableWidget.setHorizontalHeaderLabels(("ID No.", "Author", "Type", "Year", "Title", "Page"))
+
+        toolbar = QToolBar()
+        toolbar.setMovable(False)
+        self.addToolBar(toolbar)
+
+        statusbar = QStatusBar()
+        self.setStatusBar(statusbar)
+
+        btn_ac_adduser = QAction(QIcon("save.png"), "Add Bibtex", self)  # add icon
+        btn_ac_adduser.triggered.connect(self.insert)
+        btn_ac_adduser.setStatusTip("Add Bibtex")
+        toolbar.addAction(btn_ac_adduser)
+
+        btn_ac_refresh = QAction(QIcon("loading.png"), "Refresh", self)  # refresh icon
+        btn_ac_refresh.triggered.connect(self.loaddata)
+        btn_ac_refresh.setStatusTip("Refresh Table")
+        toolbar.addAction(btn_ac_refresh)
+
+        btn_ac_search = QAction(QIcon("magnifying-glass.png"), "Search", self)  # search icon
+        btn_ac_search.triggered.connect(self.search)
+        btn_ac_search.setStatusTip("Search User")
+        toolbar.addAction(btn_ac_search)
+
+        btn_ac_delete = QAction(QIcon("delete.png"), "Delete", self)
+        btn_ac_delete.triggered.connect(self.delete)
+        btn_ac_delete.setStatusTip("Delete User")
+        toolbar.addAction(btn_ac_delete)
+
+        btn_ac_filter = QAction(QIcon("selective.png"), "Filter", self)
+        btn_ac_filter.triggered.connect(self.filterBibtex)
+        btn_ac_filter.setStatusTip("Filter")
+        toolbar.addAction(btn_ac_filter)
+
+        btn_ac_help = QAction(QIcon("question.png"), "Help", self)
+        btn_ac_help.triggered.connect(self.help)
+        btn_ac_help.setStatusTip("Help")
+        toolbar.addAction(btn_ac_help)
+
+        adduser_action = QAction(QIcon("save.png"), "Insert Bibtex", self)
+        adduser_action.triggered.connect(self.insert)
+        file_menu.addAction(adduser_action)
+
+        searchuser_action = QAction(QIcon("magnifying-glass.png"), "Search Bibtex", self)
+        searchuser_action.triggered.connect(self.search)
+        search_menu.addAction(searchuser_action)
+
+        deluser_action = QAction(QIcon("delete.png"), "Delete", self)
+        deluser_action.triggered.connect(self.delete)
+        file_menu.addAction(deluser_action)
+
+        filteruser_action = QAction(QIcon("selective.png"), "Filter", self)
+        filteruser_action.triggered.connect(self.filterBibtex)
+        file_menu.addAction(filteruser_action)
+
+        about_action = QAction(QIcon("development.png"), "Developer", self)  # info icon
+        about_action.triggered.connect(self.about)
+        about_menu.addAction(about_action)
+
+    def loaddata(self):
+        self.connection = sqlite3.connect("database.db")
+        query = "SELECT * FROM bibtexs"
+        result = self.connection.execute(query)
+        self.tableWidget.setRowCount(0)
+        for row_number, row_data in enumerate(result):
+            self.tableWidget.insertRow(row_number)
+            for column_number, data in enumerate(row_data):
+                self.tableWidget.setItem(row_number, column_number, QTableWidgetItem(str(data)))
+        self.connection.close()
+
+    def handlePaintRequest(self, printer):
+        document = QTextDocument()
+        cursor = QTextCursor(document)
+        model = self.table.model()
+        table = cursor.insertTable(
+            model.rowCount(), model.columnCount())
+        for row in range(table.rows()):
+            for column in range(table.columns()):
+                cursor.insertText(model.item(row, column).text())
+                cursor.movePosition(QTextCursor.NextCell)
+        document.print_(printer)
+
+    def insert(self):
+        dlg = InsertDialog()
+        dlg.exec_()
+
+    def delete(self):
+        dlg = DeleteDialog()
+        dlg.exec_()
+
+    def search(self):
+        dlg = SearchDialog()
+        dlg.exec_()
+
+    def about(self):
+        dlg = AboutDialog()
+        dlg.exec_()
+
+    def filterBibtex(self):
+        dlg = FilterDialog()
+        dlg.exec_()
+
+    def help(self):
+        dlg = HelpDialog()
+        dlg.exec_()
+
+
+app = QApplication(sys.argv)
+if (QDialog.Accepted == True):
+    window = MainWindow()
+    window.show()
+    window.loaddata()
+sys.exit(app.exec_())
